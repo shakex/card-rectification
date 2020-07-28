@@ -1,10 +1,6 @@
-# author: kxie
-# mail: xiekai@sundear.com
-# date: 2020-07-18
-
 """
 software: id-card rectification
-version: 2.0.0
+version: 2.0
 """
 
 import os
