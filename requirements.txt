@@ -1,5 +1,6 @@
-python==3.5.2
-opencv-python==3.4.0.12
-scikit-image==0.13.0
-numpy==1.12.1
-imutils==0.5.3
+torch
+torchvision
+opencv-python==3.4.9.33
+scikit-image
+imutils
+numpy

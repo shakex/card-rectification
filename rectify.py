@@ -382,6 +382,9 @@ def finetune(img, ratio):
         img = cv2.resize(img, (img.shape[1], int(img.shape[1] / 540 * 856)))
         r = int(img.shape[1] / 540 * 31.8)
     img = set_corner(img, r)
+    if img.shape[0] > img.shape[1]:
+        img = cv2.transpose(img)
+        img = cv2.flip(img, 0)
     return img
 
 
@@ -407,6 +410,7 @@ def inference():
     image = cv2.imread(input_path)
     img = cv2.resize(image, (PROCESS_SIZE, int(PROCESS_SIZE * image.shape[0] / image.shape[1])))
     ratio = image.shape[1] / PROCESS_SIZE
+
     try:
         if debug:
             print("Edge Detection: try method1...")
