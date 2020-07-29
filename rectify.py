@@ -223,7 +223,7 @@ def checked_valid_transform(approx):
     return True
 
 
-# 获取身份证四个角点
+# get four corners of the ID-card
 def get_cnt(edged, img, ratio):
     kernel = np.ones((3, 3), np.uint8)
     edged = cv2.dilate(edged, kernel, iterations=1)
@@ -338,7 +338,7 @@ Func4: Image Postprocess
 """
 
 
-# 裁剪身份证圆角
+# set rounded corner
 def set_corner(img, r):
     b_channel, g_channel, r_channel = cv2.split(img)
     alpha_channel = np.ones(b_channel.shape, dtype=b_channel.dtype) * 255
@@ -370,7 +370,7 @@ def set_corner(img, r):
     return img_bgra
 
 
-# 结果微调
+# result finetune
 def finetune(img, ratio):
     offset = int(2 * ratio)
     img = img[offset + 15:img.shape[0] - offset,
