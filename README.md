@@ -1,9 +1,8 @@
 # ID-Card Rectification (v2.0)
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/shakex/Recurrent-Decoding-Cell/blob/master/LICENSE)
 
 ![example](example.jpg)
 
-A python-based algorithm for id-card rectification, specially optimized for China 2nd-generation id-card rectification. Given an input image which contains a card, the algorithm detects the card contour and performs perspective transformation in order to obatin the rectified card as output. 
+**A python-based algorithm for id-card rectification**, specially optimized for China 2nd-generation id-card rectification. Given an input image which contains a card, the algorithm detects the card contour and performs perspective transformation in order to obatin the rectified card as output. 
 
 ## Features
 - An novel edge detection network is implemented to detect the card contour under complex background. The network is based on the [RDC project](https://github.com/shakex/Recurrent-Decoding-Cell) and a new loss called edge-consist-loss is implemented to better impove the detection result.
@@ -22,7 +21,7 @@ A python-based algorithm for id-card rectification, specially optimized for Chin
 ### Install
 `$ pip install -r requirements.txt`
 
-> if you want to run the algorithm with GPU, make sure that your computer support Nivida GPU and then install cuda: https://developer.nvidia.com/cuda-downloads. The algorithm will run with GPU if cuda is available, otherwise it will run with CPU, which takes more time complexity for image processing.
+> if you want to run the algorithm with GPU, make sure that your computer support Nivida GPU and then [install cuda](https://developer.nvidia.com/cuda-downloads). The algorithm will run with GPU if cuda is available, otherwise it will run with CPU, which takes more time complexity for image processing.
 
 ### Run
 1. Go to `Card-Rectification/`
