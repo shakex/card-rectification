@@ -1,14 +1,13 @@
-# 身份证图片校正程序 (v2.0)
-主要功能：针对输入的身份证件图像进行透视变化校正，输出原分辨率大小的校正图像。基于Python开发。
-- 校正示例：
+# ID-Card Rectification (v2.0)
 ![example](example.jpg)
 
-## 更新特性
-1. 结合了深度学习，针对白色背景、背景复杂、光源变化的情况，可以有效地识别证件边缘，提高校正的准确率；
-2. 针对不同长宽的输入图像，最后结果都会统一输出为二代身份证标准格式。
+A python-based algorithm for id-card rectification, specially optimized for China 2nd-generation id-card rectification. Given an input image which contains a card, the algorithm detects the card contour and performs perspective transformation in order to obatin the rectified card as output. 
 
+## Features
+- An novel edge detection network is implemented to detect the card contour under complex background. The network is based on the [RDC paper](https://github.com/shakex/Recurrent-Decoding-Cell) and a new loss called edge-consist-loss is implemented to better impove the detection result.
+- The algorithm works well for various input shapes, the output will be finetuned as the standard format of China 2nd-generation id-card.
 
-## 依赖包
+## Requirements
 - pytorch
 - torchvision
 - opencv-python
@@ -17,31 +16,29 @@
 - numpy
 - imutils
 
+## Usage
+### Install
+`$ pip install -r requirements.txt`
 
-## 使用方法
-### 安装（使用CPU）
-1. `$ pip install -r requirements.txt`
+> if you want to run the algorithm with GPU, make sure that your computer support Nivida GPU and then install cuda: https://developer.nvidia.com/cuda-downloads. The algorithm will run with GPU if cuda is available, otherwise it will run with CPU, which takes more time complexity for image processing.
 
-### 安装（使用GPU）
-1. 安装cuda：参考 https://developer.nvidia.com/cuda-downloads
-2. `$ pip install -r requirements.txt`
-
-### 运行
-1. 进入 `Card-Rectification/` 目录
-2. 单张图片处理：`$ python rectify.py [input_path] [output_path]`
-    - `input_path`: 待校正图像的位置
-    - `output_path`: 校正后图像的保存位置
+### Run
+1. Go to `Card-Rectification/`
+2. Single-image processing：`$ python rectify.py [input_path] [output_path]`
+    - `input_path`: the path of input image
+    - `output_path`: the path of output result
     - e.g. `$ python rectify.py example/card1.jpg result/card1_res.png`
-3. 批处理：`$ python rectify.py [input_dir] [output_dir]
-    - `input_dir`: 待校正图像目录
-    - `output_dir`: 校正后图像保存目录
-    - 默认保存图片为.png格式
+3. Mutiple-image processing：`$ python rectify.py [input_dir] [output_dir]
+    - `input_dir`: the directory of inputs
+    - `output_dir`: the directory of ouputs
     - e.g. `$ python rectify.py example/ result/`
-* GPU使用：在GPU可用的情况下，程序会优先使用GPU运行；否则将采用CPU运行。
+    > the default save format is '.png'.
 
-## 尚未解决的情况
-1. 身份证拍摄不完整或有边缘遮挡的情况；
-2. 对于身份证正反面识别并对颠倒的校正结果进行180旋转调整。
+
+## Unsolved situation
+- The card is incomplete or is occuluded by other objects;
+- If the card is upside down, the output will not adjust the rotation.
+
 
 
 
