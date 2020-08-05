@@ -15,7 +15,6 @@
 - scikit-image
 - imutils
 - numpy
-- imutils
 
 ## Usage
 ### Install
