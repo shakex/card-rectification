@@ -51,20 +51,11 @@ if __name__ == "__main__":
     """
     input1 = 'example/card1.jpg'
     input2 = 'example/card2.jpg'
-    input3 = 'example/card3.jpg'
-    input4 = 'example/card4.jpg'
-    input5 = 'example/card5.jpg'
     output1 = 'result/card1.png'
     output2 = 'result/card2.png'
-    output3 = 'result/card3.png'
-    output4 = 'result/card4.png'
-    output5 = 'result/card5.png'
 
     trained_model, device = load_model()
     inference(input1, output1, trained_model, device)
     inference(input2, output2, trained_model, device)
-    inference(input3, output3, trained_model, device)
-    inference(input4, output4, trained_model, device)
-    inference(input5, output5, trained_model, device)
 
     print("Done.")
