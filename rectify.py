@@ -1,6 +1,8 @@
 """
 software: id-card rectification
 version: 2.0
+author: kxie
+e-mail: xiekai@sundear.com
 """
 
 import os
@@ -8,14 +10,15 @@ import sys
 import cv2
 import torch
 import imutils
+import time
 import numpy as np
 from os.path import join as pjoin
-from skimage import io, exposure, img_as_ubyte
-from collections import OrderedDict
+from skimage import exposure, img_as_ubyte
 from imutils.perspective import four_point_transform
 from itertools import combinations
-from models import get_model
 from torchvision import transforms
+from load_model import load_model
+
 
 """
 Parameters Settings
@@ -24,17 +27,11 @@ debug = False
 debug_dir = 'debug/'
 PROCESS_SIZE = 1000
 MODEL_INPUT_SIZE = 1000
-
-model_arch = 'UNetRNN'
-model_path = "CRDN1000.pkl"
+name = ''
 
 
 """
-Func1: Image Preprocess
-"""
-
-"""
-Func2: Edge Detection
+Func: Edge Detection
 
 Two methods are implemented to detect the edge of input ID-card image:
 - Method1: Threshold and Canny based image processing method.
@@ -65,34 +62,6 @@ def detect_edge(img):
 
     return edged
 
-
-def load_model():
-    device = torch.device("cuda:{}".format(0) if torch.cuda.is_available() else "cpu")
-    try:
-        model = get_model({'arch': model_arch}, n_classes=2).to(device)
-        state = convert_state_dict(torch.load(model_path, map_location=device)["model_state"])
-        model.load_state_dict(state)
-        model.eval()
-        model.to(device)
-    except:
-        print("Model Error: Model \'" + model_arch + "\' import failed, please check the model file.")
-        sys.exit()
-
-    return model, device
-
-
-def convert_state_dict(state_dict):
-    """Converts a state dict saved from a dataParallel module to normal
-       module state_dict inplace
-       :param state_dict is the loaded DataParallel model_state
-    """
-    if not next(iter(state_dict)).startswith("module."):
-        return state_dict  # abort if dict is not a DataParallel model_state
-    new_state_dict = OrderedDict()
-    for k, v in state_dict.items():
-        item_name = k[7:]  # remove `module.`
-        new_state_dict[item_name] = v
-    return new_state_dict
 
 
 def get_card_colormap():
@@ -143,7 +112,7 @@ def detect_edge_cnn(img, model, device):
 
 
 """
-Func3: Four Corner Detection
+Func: Four Corner Detection
 """
 
 
@@ -334,7 +303,7 @@ def get_cnt(edged, img, ratio):
 
 
 """
-Func4: Image Postprocess
+Func: Image Postprocess
 """
 
 
@@ -389,11 +358,11 @@ def finetune(img, ratio):
 
 
 """
-Func Main
+Func: Inference
 """
 
 
-def inference():
+def inference(input_path, output_path, trained_model, device):
     image_format = [".jpg", ".jpeg", ".bmp", ".png"]
     if os.path.isfile(input_path):
         if os.path.splitext(input_path)[1] not in image_format:
@@ -406,16 +375,17 @@ def inference():
     global name
     name = os.path.splitext(os.path.basename(input_path))[0]
 
-    trained_model, device = load_model()
     image = cv2.imread(input_path)
     img = cv2.resize(image, (PROCESS_SIZE, int(PROCESS_SIZE * image.shape[0] / image.shape[1])))
     ratio = image.shape[1] / PROCESS_SIZE
+
 
     try:
         if debug:
             print("Edge Detection: try method1...")
         edged = detect_edge_cnn(image, trained_model, device)
         corners = get_cnt(edged, img, ratio)
+
     except:
         try:
             if debug:
@@ -426,13 +396,17 @@ def inference():
             print("Failed. {} could not be rectified :(".format(os.path.basename(input_path)))
             sys.exit()
 
-    result = four_point_transform(image, corners.reshape(4, 2))
-    result = finetune(result, ratio)
-    cv2.imwrite(output_path, result)
-    print("Success! Output saved in " + os.path.abspath(output_path))
+    try:
+        result = four_point_transform(image, corners.reshape(4, 2))
+        result = finetune(result, ratio)
+        cv2.imwrite(output_path, result)
+        print("Success! Output saved in " + os.path.abspath(output_path))
+    except:
+        print("Failed. {} could not be rectified :(".format(os.path.basename(input_path)))
+        sys.exit()
+    
 
-
-def inference_all():
+def inference_all(input_dir, output_dir, trained_model, device):
     count = 0
     image_format = [".jpg", ".jpeg", ".bmp", ".png"]
     file_list = os.listdir(input_dir)
@@ -452,7 +426,6 @@ def inference_all():
         name = os.path.splitext(file_list[i])[0]
         out_path = os.path.join(output_dir, name + ".png")
 
-        trained_model, device = load_model()
         try:
             image = cv2.imread(in_path)
             img = cv2.resize(image, (PROCESS_SIZE, int(PROCESS_SIZE * image.shape[0] / image.shape[1])))
@@ -474,12 +447,15 @@ def inference_all():
             except:
                 print("Failed. {} could not be rectified :(".format(file_list[i]))
                 continue
-
-        result = four_point_transform(image, corners.reshape(4, 2))
-        result = finetune(result, ratio)
-        cv2.imwrite(out_path, result)
-        print("Success! Output saved in " + os.path.abspath(out_path))
-        count = count + 1
+        
+        try:
+            result = four_point_transform(image, corners.reshape(4, 2))
+            result = finetune(result, ratio)
+            cv2.imwrite(out_path, result)
+            print("Success! Output saved in " + os.path.abspath(out_path))
+            count = count + 1
+        except:
+            print("Failed. {} could not be rectified :(".format(file_list[i]))
 
     print("Done! {}/{} success.".format(count, len(file_list)))
 
@@ -488,15 +464,15 @@ if __name__ == "__main__":
     rectify, input_, output_ = sys.argv
     # input_ = 'example/'
     # output_ = 'result/'
-    name = ''
+    trained_model, device = load_model()
 
     if os.path.isfile(os.path.abspath(input_)):
         input_path = input_
         output_path = output_
-        inference()
+        inference(input_path, output_path, trained_model, device)
     elif os.path.isdir(input_) and os.path.isdir(output_):
         input_dir = input_
         output_dir = output_
-        inference_all()
+        inference_all(input_dir, output_dir, trained_model, device)
     else:
         print("Parameters Error: invalid input or output.")
