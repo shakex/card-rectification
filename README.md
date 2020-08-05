@@ -1,10 +1,12 @@
 # ID-Card Rectification (v2.0)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/shakex/Recurrent-Decoding-Cell/blob/master/LICENSE)
+
 ![example](example.jpg)
 
 A python-based algorithm for id-card rectification, specially optimized for China 2nd-generation id-card rectification. Given an input image which contains a card, the algorithm detects the card contour and performs perspective transformation in order to obatin the rectified card as output. 
 
 ## Features
-- An novel edge detection network is implemented to detect the card contour under complex background. The network is based on the [RDC paper](https://github.com/shakex/Recurrent-Decoding-Cell) and a new loss called edge-consist-loss is implemented to better impove the detection result.
+- An novel edge detection network is implemented to detect the card contour under complex background. The network is based on the [RDC project](https://github.com/shakex/Recurrent-Decoding-Cell) and a new loss called edge-consist-loss is implemented to better impove the detection result.
 - The algorithm works well for various input shapes, the output will be finetuned as the standard format of China 2nd-generation id-card.
 
 ## Requirements
@@ -24,22 +26,25 @@ A python-based algorithm for id-card rectification, specially optimized for Chin
 
 ### Run
 1. Go to `Card-Rectification/`
+
 2. Single-image processing：`$ python rectify.py [input_path] [output_path]`
     - `input_path`: the path of input image
     - `output_path`: the path of output result
     - e.g. `$ python rectify.py example/card1.jpg result/card1_res.png`
-3. Mutiple-image processing：`$ python rectify.py [input_dir] [output_dir]
+
+3. Mutiple-image processing：`$ python rectify.py [input_dir] [output_dir]`
     - `input_dir`: the directory of inputs
     - `output_dir`: the directory of ouputs
     - e.g. `$ python rectify.py example/ result/`
+
     > the default save format is '.png'.
 
 
 ## Unsolved situation
-- The card is incomplete or is occuluded by other objects;
+- The card is incomplete or is occuluded by other objects.
 - If the card is upside down, the output will not adjust the rotation.
 
 
-
+For any problems, please contact [kxie_shake@outlook.com](mailto:kxie_shake@outlook.com)
 
 
