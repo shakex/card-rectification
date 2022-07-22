@@ -1,6 +1,6 @@
 torch
 torchvision
-opencv-python==3.4.9.33
+opencv-python==4.2.0.32
 scikit-image
 imutils
 numpy
