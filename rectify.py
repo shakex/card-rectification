@@ -201,9 +201,9 @@ def get_cnt(edged, img, ratio):
     edged = edged * mask
 
     cnts = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    cnts = cnts[0] if imutils.is_cv2() else cnts[1]
+    # cnts = cnts[0] if imutils.is_cv2() else cnts[1]
+    cnts = cnts[0] if imutils.is_cv2(or_better=True) else cnts[1]
     cnts = sorted(cnts, key=lambda c: cv2.arcLength(c, True), reverse=True)
-
     edgelines = np.zeros(edged.shape, np.uint8)
     cNum = 4
 
