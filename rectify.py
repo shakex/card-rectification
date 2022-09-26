@@ -412,7 +412,7 @@ def inference_all(input_dir, output_dir, trained_model, device):
     file_list = os.listdir(input_dir)
     file_list.sort()
     for i in range(0, len(file_list)):
-        print("[{}/{}] ".format(i+1, len(file_list)), end='')
+        # print("[{}/{}] ".format(i+1, len(file_list)), end='')
         in_path = os.path.join(input_dir, file_list[i])
 
         if os.path.isfile(in_path):
