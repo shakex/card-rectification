@@ -2,3 +2,5 @@
 .idea
 *.pyc
 method.md
+example/
+result/

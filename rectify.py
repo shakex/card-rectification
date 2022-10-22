@@ -201,9 +201,9 @@ def get_cnt(edged, img, ratio):
     edged = edged * mask
 
     cnts = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    cnts = cnts[0] if imutils.is_cv2() else cnts[1]
+    # cnts = cnts[0] if imutils.is_cv2() else cnts[1]
+    cnts = cnts[0] if imutils.is_cv2(or_better=True) else cnts[1]
     cnts = sorted(cnts, key=lambda c: cv2.arcLength(c, True), reverse=True)
-
     edgelines = np.zeros(edged.shape, np.uint8)
     cNum = 4
 
@@ -412,7 +412,7 @@ def inference_all(input_dir, output_dir, trained_model, device):
     file_list = os.listdir(input_dir)
     file_list.sort()
     for i in range(0, len(file_list)):
-        print("[{}/{}] ".format(i+1, len(file_list)), end='')
+        # print("[{}/{}] ".format(i+1, len(file_list)), end='')
         in_path = os.path.join(input_dir, file_list[i])
 
         if os.path.isfile(in_path):
